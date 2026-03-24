@@ -1,14 +1,14 @@
 {
-  "name": "docker-nodejs-sample",
+  "name": "workshop-node-congress",
   "version": "1.0.0",
   "description": "Modern TypeScript Node.js Docker sample with React and Tailwind CSS",
-  "homepage": "https://github.com/kristiyan-velkov/docker-nodejs-sample",
+  "homepage": "https://github.com/kristiyan-velkov/workshop-node-congress",
   "author": {
     "name": "Kristiyan Velkov",
     "url": "https://www.linkedin.com/in/kristiyan-velkov-763130b3/"
   },
   "bugs": {
-    "url": "https://github.com/kristiyan-velkov/docker-nodejs-sample/issues"
+    "url": "https://github.com/kristiyan-velkov/workshop-node-congress/issues"
   },
   "funding": {
     "type": "github",

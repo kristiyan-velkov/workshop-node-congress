@@ -1,26 +1,10 @@
-# Dockerize JavaScript Application
+# Workshop Node.js Congress 2026
 
-## DevOps for JavaScript Developers: From Code to Production (Node Congress Workshop)
+This project demonstrates how to effectively containerize a modern full-stack Node.js application using Docker for both **development** and **production** workflows.
 
-This repository contains the hands-on workshop project for Node Congress, focused on Dockerizing a modern JavaScript application and shipping it with production-ready DevOps practices.
+It is used as part of the [official Docker Node.js sample](https://docs.docker.com/guides/nodejs), showcasing industry best practices for full-stack containerization—including secure builds, streamlined development workflows, and optimized production delivery.
 
-<div align="center">
-  <img src="./src/images/node-js-docker.png" alt="Docker Node.js Sample" />
-</div>
-
-The workshop is built around the [official Docker Node.js sample](https://docs.docker.com/guides/nodejs) and extends it with a practical path from local development to production deployment.
-
-## Workshop Goals
-
-By the end of this workshop, participants will be able to:
-
-- Containerize a full-stack JavaScript/TypeScript app with Docker
-- Build efficient multi-stage images for development and production
-- Orchestrate app + database services using Docker Compose
-- Run tests and health checks inside containers
-- Prepare the application for CI/CD and Kubernetes deployment
-
-## 🚀 Project Features
+## 🚀 Features
 
 - **Full-Stack Architecture**: Express.js 5.x backend with React 19 frontend
 - **Modern Tech Stack**: TypeScript, Vite, Tailwind CSS 4, PostgreSQL 16.10
@@ -28,11 +12,11 @@ By the end of this workshop, participants will be able to:
 - **Database**: PostgreSQL with automatic connection handling and health checks
 - **Development Experience**: Hot reload, file watching, automatic database startup
 - **Production-Ready**: Multi-stage Docker builds, security hardening, resource management
-- **Comprehensive Testing**: 101 passing tests with Vitest and React Testing Library
+- **Comprehensive Testing**: Full Vitest suite (client + server) with coverage
 - **Docker Optimized**: Separate development/production configurations with proper networking
 - **CI/CD Ready**: GitHub Actions workflows, Kubernetes deployment configurations
 
-## Workshop Quick Start
+## 🏃‍♂️ Quick Start
 
 ### Prerequisites
 
@@ -44,8 +28,8 @@ By the end of this workshop, participants will be able to:
 
 ```bash
 # Clone the repository
-git clone https://github.com/kristiyan-velkov/workshop-node-congress.git
-cd workshop-node-congress
+git clone https://github.com/kristiyan-velkov/docker-nodejs-sample
+cd docker-nodejs-sample
 
 # Start development with smart file watching
 docker compose up app-dev --watch
@@ -59,7 +43,7 @@ docker compose up app-dev
 # Health Check: http://localhost:3000/health
 ```
 
-### Production and Testing
+### Production & Testing
 
 ```bash
 # Production mode (optimized build, single port)
@@ -69,11 +53,11 @@ docker compose --profile prod up app-prod --build
 # Full-stack app: http://localhost:8080 (serves both API and frontend)
 # Health Check: http://localhost:8080/health
 
-# Run comprehensive test suite
-docker compose --profile test up app-test --build
+# Run tests (Vitest in container; includes Postgres via compose)
+docker compose --profile test run --rm --build app-test
 
-# Database operations
-docker compose --profile local up db-local -d  # Local database only
+# Database only (service name `db` — no extra profile)
+docker compose up db -d
 ```
 
 ### Run Locally
@@ -121,44 +105,20 @@ npm run db:logs
 
 ```bash
 # Check if database is running
-docker ps | grep todoapp-db-local
+docker ps | grep todoapp-db
 
 # View database logs
 npm run db:logs
 
-# Reset database
+# Restart database container
 npm run db:stop && npm run db:start
 ```
 
 ### Run Tests in Docker
 
 ```bash
-# Run all tests
-docker compose run --rm test
-
-# Run tests with coverage
-docker compose run --rm app npm run test:coverage
+docker compose --profile test run --rm --build app-test
 ```
-
-## Workshop Flow
-
-### Part 1: Development Container Workflow
-
-- Start services with Docker Compose
-- Enable file watching and hot reload
-- Validate API and frontend communication
-
-### Part 2: Production-Ready Image
-
-- Build optimized production artifacts
-- Run the app behind a single container port
-- Verify health checks and runtime behavior
-
-### Part 3: Quality and Release Readiness
-
-- Run tests in containers
-- Review Docker security and image scanning
-- Explore CI/CD and Kubernetes deployment options
 
 ## 🔧 Build System
 
@@ -220,16 +180,8 @@ dist/
 
 ## 📚 Documentation
 
-- **[Development Guide](docs/DEVELOPMENT.md)** - local setup and workshop workflows
-- **[Build System](docs/BUILD_SYSTEM.md)** - esbuild configuration and architecture
-- **[Deployment Guide](docs/DEPLOYMENT.md)** - production deployment strategies
-- **[Kubernetes Config](nodejs-sample-kubernetes.yaml)** - production-ready K8s deployment
-
-## Who This Workshop Is For
-
-- JavaScript and TypeScript developers who want stronger DevOps skills
-- Backend, frontend, and full-stack engineers moving to containerized delivery
-- Teams adopting Docker-based development and production workflows
+- **[Docker & deployment guide](README.Docker.md)** — Dockerfiles, Compose profiles, ports, CI/CD secrets, troubleshooting
+- **[Kubernetes](nodejs-sample-kubernetes.yaml)** — Namespace, Postgres, app Deployment/Service, Ingress, HPA (update image and domains before apply)
 
 **Author**
 
