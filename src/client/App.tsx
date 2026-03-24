@@ -66,7 +66,7 @@ const App: React.FC = () => {
         <footer className="mt-12 text-center text-white/60 text-xs">
           <div className="glass px-4 py-3 rounded-xl inline-block">
             <p className="mb-1">Crafted with 💜 using cutting-edge technologies</p>
-            <p>© 2025 Kristiyan Velkov • Built for the future</p>
+            <p>© 2026 Kristiyan Velkov • Built for the future</p>
           </div>
         </footer>
       </div>
