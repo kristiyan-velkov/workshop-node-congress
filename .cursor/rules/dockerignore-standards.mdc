@@ -1,0 +1,74 @@
+---
+description: .dockerignore patterns for Node.js + Vite + esbuild full-stack builds
+globs: **/.dockerignore
+alwaysApply: false
+---
+
+# .dockerignore standards (Node.js full-stack)
+
+Keep build context small and secret-free. Applies to all three Dockerfiles in this repo.
+
+## Required exclusions
+
+```dockerignore
+# ✅ GOOD — minimum set for this workshop repo
+node_modules/
+dist/
+.git/
+.github/
+.env*
+coverage/
+*.log
+.DS_Store
+.vscode/
+```
+
+```dockerignore
+# ❌ BAD — missing secrets or shipping host node_modules
+# (no .dockerignore, or only node_modules)
+```
+
+## Keep for builds (do NOT ignore)
+
+These are needed when `COPY . .` runs `npm run build`:
+
+- `vite.config.ts`
+- `esbuild.config.js`
+- `tailwind.config.js`, `postcss.config.js`
+- `tsconfig.json`
+- `src/`
+
+Use negation when broad patterns would exclude them:
+
+```dockerignore
+*.config.js
+!vite.config.ts
+!esbuild.config.js
+!tailwind.config.js
+!postcss.config.js
+!tsconfig.json
+```
+
+## Optional exclusions (this repo)
+
+```dockerignore
+*.md
+compose.yml
+Taskfile.yml
+nodejs-sample-kubernetes.yaml
+```
+
+Docs and Compose files are not needed inside the image.
+
+## Security notes
+
+- **Never** allow `.env` or `.env.local` in the build context — use Compose/runtime env instead.
+- Excluding `.git/` prevents accidental history leaks and speeds builds.
+- Excluding `coverage/` and `**/__tests__/**` is optional; tests still run via `Dockerfile.test` with full `COPY . .` if not ignored.
+- Review `COPY . .` after editing `.dockerignore`; a new secret file at repo root must be listed.
+
+## Avoid
+
+- Ignoring `package-lock.json` (breaks reproducible `npm ci`).
+- Ignoring `esbuild.config.js` or `vite.config.ts` (build fails).
+- Copying `node_modules` from host instead of installing in-container.

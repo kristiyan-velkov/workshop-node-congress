@@ -7,8 +7,8 @@ Production-oriented Node.js todo app: Express 5 API, React 19 (Vite) client, Pos
 ### Development (API + Vite + Postgres)
 
 ```bash
-git clone <repository-url>
-cd docker-nodejs-sample
+git clone https://github.com/kristiyan-velkov/workshop-node-congress
+cd workshop-node-congress
 cp .env.example .env
 
 docker compose up --build
@@ -20,7 +20,7 @@ docker compose up app-dev --build --watch
 |--------|------------|
 | API (Express) | http://localhost:3000 (override with `APP_PORT`) |
 | Frontend (Vite HMR) | http://localhost:5173 (`VITE_PORT`) |
-| Node inspector | `localhost:9229` (`DEBUG_PORT`) |
+| Node inspector | `localhost:9230` (`DEBUG_PORT`) |
 | Health | http://localhost:3000/health |
 
 The `db` service has **no profile**; it starts with `app-dev` when you run `docker compose up`.
@@ -52,13 +52,13 @@ Uses `Dockerfile.test`; requires `db` (Compose starts profile services together 
 
 ## Dockerfiles (repository root)
 
-| File | Purpose |
-|------|---------|
-| **`Dockerfile`** | Production: `builder` → `runner`, `npm ci`, `npm run build`, `npm prune --omit=dev`, `USER node`, `ENTRYPOINT ["node","dist/server.js"]` |
-| **`Dockerfile.development`** | Dev dependencies; runs as **root** so bind-mounted `vite.config.ts` etc. stay writable (Vite writes `*.timestamp-*.mjs` beside the config) |
-| **`Dockerfile.test`** | Full install; `CMD npm run test:coverage` for CI/Compose |
+| File | Base image | Purpose |
+|------|------------|---------|
+| **`Dockerfile`** | `node:24.16.0-alpine` | Production: `builder` → `runner`, `npm ci`, `npm run build`, `npm prune --omit=dev`, `USER node`, `ENTRYPOINT ["node","dist/server.js"]` |
+| **`Dockerfile.development`** | `node:24.16.0-alpine` | Dev dependencies; runs as **root** so bind-mounted `vite.config.ts` etc. stay writable (Vite writes `*.timestamp-*.mjs` beside the config) |
+| **`Dockerfile.test`** | `node:24.16.0-alpine` | Full install; `CMD npm run test:coverage` for CI/Compose |
 
-Default Node base: **`ARG NODE_VERSION=24.14.0-alpine`** (override with `docker build --build-arg NODE_VERSION=...`).
+Default Node base: **`ARG NODE_VERSION=24.16.0-alpine`** (override with `docker build --build-arg NODE_VERSION=...`).
 
 ---
 
@@ -99,7 +99,7 @@ Triggers: `push` / `pull_request` to `main`.
 
 - `DOCKER_USERNAME`
 - `DOCKERHUB_TOKEN` (PAT with push access)
-- `DOCKERHUB_PROJECT_NAME` (Docker Hub repo name, e.g. `docker-nodejs-sample`)
+- `DOCKERHUB_PROJECT_NAME` (Docker Hub repo name, e.g. `workshop-node-congress`)
 
 QEMU is configured so **arm64** images build on GitHub’s amd64 runners.
 
@@ -123,7 +123,7 @@ kubectl get pods,svc -n todoapp
 
 ## Environment variables (`.env`)
 
-See `.env.example` for `APP_PORT`, `VITE_PORT`, `PROD_PORT`, `DB_PORT`, Postgres credentials, and `ALLOWED_ORIGINS`.
+See `.env.example` for `NODE_VERSION` (`24.16.0-alpine`), `APP_PORT`, `VITE_PORT`, `PROD_PORT`, `DB_PORT`, Postgres credentials, and `ALLOWED_ORIGINS`.
 
 ---
 

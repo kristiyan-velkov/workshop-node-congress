@@ -1,7 +1,7 @@
 # =========================================
 # Development — hot reload (Express + Vite)
 # =========================================
-ARG NODE_VERSION=24.14.0-alpine
+ARG NODE_VERSION=24.16.0-alpine
 
 FROM node:${NODE_VERSION}
 
@@ -23,6 +23,6 @@ ENV NODE_ENV=development \
 # Host-owned mounts often deny uid 1000 (node), which breaks Vite’s config sidecar.
 # Production uses the separate production Dockerfile (non-root).
 
-EXPOSE 3000 5173 9229
+EXPOSE 3000 5173 9230
 
 CMD ["npm", "run", "dev:docker"]

@@ -46,6 +46,17 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
+app.get('/api', (req, res) => {
+  res.json({
+    success: true,
+    message: 'API is running',
+    endpoints: {
+      todos: '/api/todos',
+      health: '/health',
+    },
+  });
+});
+
 app.use('/api/todos', todosRouter);
 
 // Serve static files in production

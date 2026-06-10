@@ -15,7 +15,7 @@ services:
     ports:
       - '${APP_PORT:-3000}:3000' # API server
       - '${VITE_PORT:-5173}:5173' # Vite dev server
-      - '${DEBUG_PORT:-9229}:9229' # Node.js debugger
+      - '${DEBUG_PORT:-9230}:9230' # Node.js debugger (matches dev:server --inspect)
     environment:
       NODE_ENV: development
       DOCKER_ENV: 'true'

@@ -1,0 +1,85 @@
+---
+description: Node.js full-stack Dockerfile patterns — multi-stage prod, dev root user, test image
+globs: **/Dockerfile, **/Dockerfile.*
+alwaysApply: false
+---
+
+# Dockerfile standards (Node.js full-stack workshop)
+
+Express + Vite/React + esbuild. Three Dockerfiles: production, development, test.
+
+## Shared conventions
+
+- Pin base: `ARG NODE_VERSION=24.16.0-alpine` at top; use in every `FROM`.
+- `WORKDIR /app`.
+- Copy `package.json package-lock.json` before source for cache.
+- Prefer `npm ci` over `npm install`.
+
+## Production — `Dockerfile`
+
+```dockerfile
+# ✅ GOOD — builder + runner, prune devDeps, non-root
+ARG NODE_VERSION=24.16.0-alpine
+FROM node:${NODE_VERSION} AS builder
+COPY package.json package-lock.json* ./
+RUN npm ci
+COPY . .
+RUN npm run build && npm prune --omit=dev
+
+FROM node:${NODE_VERSION} AS runner
+ENV NODE_ENV=production PORT=3000 HOST=0.0.0.0
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/dist ./dist
+USER node
+ENTRYPOINT ["node", "dist/server.js"]
+```
+
+```dockerfile
+# ❌ BAD — single stage, root, devDeps in prod
+FROM node:latest
+COPY . .
+RUN npm install && npm run build
+CMD ["node", "dist/server.js"]
+```
+
+- **Builder** runs `npm run build` → `dist/client` (Vite) + `dist/server.js` (esbuild).
+- **Runner** copies pruned `node_modules` + `dist` only (esbuild uses `packages: external`).
+- Always `USER node` in runner; use `--chown=node:node` on `COPY --from=builder`.
+
+## Development — `Dockerfile.development`
+
+```dockerfile
+# ✅ GOOD — dev deps, cache mount, root for bind mounts
+FROM node:${NODE_VERSION}
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
+COPY . .
+ENV NODE_ENV=development
+EXPOSE 3000 5173 9230
+CMD ["npm", "run", "dev:docker"]
+# Intentionally NO USER node — Vite writes beside vite.config.ts on bind mounts
+```
+
+```dockerfile
+# ❌ BAD — USER node in dev with host bind mounts → EACCES on vite.config.ts.timestamp-*
+USER node
+```
+
+## Test — `Dockerfile.test`
+
+```dockerfile
+# ✅ GOOD — full install, CI env, non-root after chown
+RUN npm ci
+COPY . .
+RUN chown -R node:node /app
+ENV NODE_ENV=test CI=true
+USER node
+CMD ["npm", "run", "test:coverage"]
+```
+
+## Avoid
+
+- Unpinned `node:latest` or floating `node:24-alpine` (use `24.16.0-alpine`).
+- Running production image as root.
+- Using dev Dockerfile for deployment.
+- Bundling secrets via `ENV` or copying `.env` into the image.

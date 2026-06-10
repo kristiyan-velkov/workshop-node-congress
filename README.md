@@ -7,7 +7,7 @@ It is used as part of the [official Docker Node.js sample](https://docs.docker.c
 ## 🚀 Features
 
 - **Full-Stack Architecture**: Express.js 5.x backend with React 19 frontend
-- **Modern Tech Stack**: TypeScript, Vite, Tailwind CSS 4, PostgreSQL 16.10
+- **Modern Tech Stack**: Node.js 24 (Alpine), TypeScript, Vite, Tailwind CSS 4, PostgreSQL 16
 - **Fast Build System**: esbuild for lightning-fast server builds (12KB output)
 - **Database**: PostgreSQL with automatic connection handling and health checks
 - **Development Experience**: Hot reload, file watching, automatic database startup
@@ -20,16 +20,16 @@ It is used as part of the [official Docker Node.js sample](https://docs.docker.c
 
 ### Prerequisites
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [Node.js 22+](https://nodejs.org/) (for local development)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — pulls `node:24.16.0-alpine` on first build
+- [Node.js 24+](https://nodejs.org/) (optional, for local IDE work outside Docker)
 - [Git](https://git-scm.com/)
 
 ### Run with Docker (Recommended)
 
 ```bash
 # Clone the repository
-git clone https://github.com/kristiyan-velkov/docker-nodejs-sample
-cd docker-nodejs-sample
+git clone https://github.com/kristiyan-velkov/workshop-node-congress
+cd workshop-node-congress
 
 # Start development with smart file watching
 docker compose up app-dev --watch
@@ -140,7 +140,7 @@ npm run build          # Builds both server and client
 ### esbuild Features
 
 - **Lightning Fast**: 10-20ms build times
-- **ESM Output**: Modern ES modules for Node.js 22
+- **ESM Output**: Modern ES modules for Node.js 24
 - **External Packages**: Dependencies not bundled (smaller output)
 - **Source Maps**: Full debugging support
 - **Production Optimized**: Minification enabled in production
@@ -162,7 +162,7 @@ dist/
 - **Frontend**: Vite dev server on port 5173 with HMR
 - **Backend**: Express server on port 3000 with hot reload
 - **Database**: PostgreSQL on port 5432
-- **Debugging**: Node.js inspector on port 9229
+- **Debugging**: Node.js inspector on port 9230
 
 ### Production Mode
 
@@ -180,6 +180,8 @@ dist/
 
 ## 📚 Documentation
 
+- **[Workshop guide](WORKSHOP.md)** — Node.js Congress 2026 agenda, checkpoints, troubleshooting
+- **[Workshop cheatsheet](WORKSHOP-CHEATSHEET.md)** — one-page commands, ports, GHA secrets
 - **[Docker & deployment guide](README.Docker.md)** — Dockerfiles, Compose profiles, ports, CI/CD secrets, troubleshooting
 - **[Kubernetes](nodejs-sample-kubernetes.yaml)** — Namespace, Postgres, app Deployment/Service, Ingress, HPA (update image and domains before apply)
 

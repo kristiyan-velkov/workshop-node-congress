@@ -1,0 +1,102 @@
+---
+description: Compose profiles, Watch, healthchecks, and service DNS for Node.js full-stack app
+globs: **/compose.yml, **/compose.yaml
+alwaysApply: false
+---
+
+# Docker Compose standards (workshop-node-congress)
+
+## Build
+
+- `build.context: .`
+- `build.dockerfile`: `Dockerfile`, `Dockerfile.development`, or `Dockerfile.test` per service
+- Optional `build.args`: `NODE_VERSION: 24.16.0-alpine` (must match Dockerfile `ARG`)
+
+```yaml
+# ✅ GOOD — explicit Node version aligned with Dockerfiles
+app-prod:
+  build:
+    context: .
+    dockerfile: Dockerfile
+    args:
+      NODE_VERSION: 24.16.0-alpine
+```
+
+## Profiles and services
+
+| Profile | Services | Dockerfile |
+|---------|----------|------------|
+| *(default)* | `app-dev`, `db` | `Dockerfile.development` |
+| `prod` | `app-prod`, `db` | `Dockerfile` |
+| `test` | `app-test`, `db` | `Dockerfile.test` |
+
+```yaml
+# ✅ GOOD — prod behind profile, db always available
+app-prod:
+  profiles: [prod]
+  depends_on:
+    db:
+      condition: service_healthy
+app-dev:
+  depends_on:
+    db:
+      condition: service_healthy
+```
+
+```yaml
+# ❌ BAD — POSTGRES_HOST=localhost inside app container
+environment:
+  POSTGRES_HOST: localhost
+```
+
+Use **`POSTGRES_HOST: db`** — Compose DNS name for the Postgres service.
+
+## Healthchecks
+
+```yaml
+# ✅ GOOD — db ready before app starts
+db:
+  healthcheck:
+    test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-todoapp} -d ${POSTGRES_DB:-todoapp}']
+    interval: 10s
+    retries: 5
+app-dev:
+  depends_on:
+    db:
+      condition: service_healthy
+```
+
+## Compose Watch (`develop.watch`)
+
+```yaml
+# ✅ GOOD — sync source, rebuild on lockfile change
+develop:
+  watch:
+    - action: sync
+      path: ./src
+      target: /app/src
+    - action: rebuild
+      path: ./package.json
+```
+
+- **sync** — fast path for TS/TSX changes (ignore test files if desired).
+- **rebuild** — when dependencies change.
+- Keep `vite.config.ts` mount **writable** (not `:ro`) — Vite writes timestamp sidecars.
+
+## Environment
+
+- Dev: `NODE_ENV=development`, `ALLOWED_ORIGINS` includes `:5173` and `:3000`.
+- Prod: `NODE_ENV=production`, set `ALLOWED_ORIGINS` to published URL (e.g. `http://localhost:8080`).
+- Test: `POSTGRES_DB: todoapp_test` on `app-test`.
+
+## Ports (defaults)
+
+- Dev: `APP_PORT:3000`, `VITE_PORT:5173`, `DEBUG_PORT:9230`
+- Prod: `PROD_PORT:8080` → container `3000`
+- DB: `DB_PORT:5432`
+
+## Avoid
+
+- Fixed global network `name:` that clashes across projects (use project-scoped networks).
+- `read_only: true` on prod Node without `tmpfs` (breaks runtime temp files).
+- Expecting Vite on `:5173` when running `app-prod`.

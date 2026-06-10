@@ -1,12 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { TodoItem } from '@/shared/types/todo';
 import App from '../App';
 
 // Mock the useTodos hook
 const mockUseTodos = {
-  todos: [],
+  todos: [] as TodoItem[],
   loading: false,
-  error: null,
+  error: null as string | null,
   addTodo: vi.fn(),
   updateTodo: vi.fn(),
   deleteTodo: vi.fn(),
@@ -86,7 +87,7 @@ describe('App', () => {
     render(<App />);
 
     expect(screen.getByText(/Crafted with 💜 using cutting-edge technologies/)).toBeInTheDocument();
-    expect(screen.getByText(/© 2025 Kristiyan Velkov/)).toBeInTheDocument();
+    expect(screen.getByText(/© 2026 Kristiyan Velkov/)).toBeInTheDocument();
   });
 
   it('handles multiple todos correctly', () => {
