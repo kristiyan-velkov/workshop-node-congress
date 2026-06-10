@@ -6,7 +6,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-bun.lockb
+bun.lockbx
 .yarn/
 .pnp/
 .pnp.js
@@ -125,8 +125,6 @@ $RECYCLE.BIN/
 # ========================================
 # DevOps & Deployment
 # ========================================
-# Docker
-.dockerignore
 
 # Kubernetes
 *.yaml.bak
