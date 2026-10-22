@@ -25,7 +25,7 @@ Use this agent (or `/docker-node-devops`) when you need to:
 
 | Area | Scope |
 |------|--------|
-| **Containerize** | Multi-stage `Dockerfile`, `node:24.16.0-alpine`, esbuild + Vite build, `npm ci`, `USER node` |
+| **Containerize** | Multi-stage `Dockerfile`, `node:24.22.1-alpine`, esbuild + Vite build, `npm ci`, `USER node` |
 | **Develop** | `Dockerfile.development`, `app-dev`, bind mounts, root user for Vite |
 | **Compose Watch** | `develop.watch` sync vs rebuild, healthchecks, service DNS |
 | **Prod / test** | `app-prod` profile, `Dockerfile.test`, Vitest in Docker |
@@ -39,7 +39,7 @@ Use this agent (or `/docker-node-devops`) when you need to:
 
 ### Dockerfile checklist
 
-- [ ] `ARG NODE_VERSION=24.16.0-alpine` pinned at top
+- [ ] `ARG NODE_VERSION=24.22.1-alpine` pinned at top
 - [ ] Production: `builder` + `runner`, `npm prune --omit=dev`
 - [ ] Production: `USER node`, `--chown=node:node` on copies
 - [ ] Development: **no** `USER node` (bind-mount permissions)

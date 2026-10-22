@@ -54,11 +54,11 @@ Uses `Dockerfile.test`; requires `db` (Compose starts profile services together 
 
 | File | Base image | Purpose |
 |------|------------|---------|
-| **`Dockerfile`** | `node:24.16.0-alpine` | Production: `builder` → `runner`, `npm ci`, `npm run build`, `npm prune --omit=dev`, `USER node`, `ENTRYPOINT ["node","dist/server.js"]` |
-| **`Dockerfile.development`** | `node:24.16.0-alpine` | Dev dependencies; runs as **root** so bind-mounted `vite.config.ts` etc. stay writable (Vite writes `*.timestamp-*.mjs` beside the config) |
-| **`Dockerfile.test`** | `node:24.16.0-alpine` | Full install; `CMD npm run test:coverage` for CI/Compose |
+| **`Dockerfile`** | `node:24.22.1-alpine` | Production: `builder` → `runner`, `npm ci`, `npm run build`, `npm prune --omit=dev`, `USER node`, `ENTRYPOINT ["node","dist/server.js"]` |
+| **`Dockerfile.development`** | `node:24.22.1-alpine` | Dev dependencies; runs as **root** so bind-mounted `vite.config.ts` etc. stay writable (Vite writes `*.timestamp-*.mjs` beside the config) |
+| **`Dockerfile.test`** | `node:24.22.1-alpine` | Full install; `CMD npm run test:coverage` for CI/Compose |
 
-Default Node base: **`ARG NODE_VERSION=24.16.0-alpine`** (override with `docker build --build-arg NODE_VERSION=...`).
+Default Node base: **`ARG NODE_VERSION=24.22.1-alpine`** (override with `docker build --build-arg NODE_VERSION=...`).
 
 ---
 
@@ -123,7 +123,7 @@ kubectl get pods,svc -n todoapp
 
 ## Environment variables (`.env`)
 
-See `.env.example` for `NODE_VERSION` (`24.16.0-alpine`), `APP_PORT`, `VITE_PORT`, `PROD_PORT`, `DB_PORT`, Postgres credentials, and `ALLOWED_ORIGINS`.
+See `.env.example` for `NODE_VERSION` (`24.22.1-alpine`), `APP_PORT`, `VITE_PORT`, `PROD_PORT`, `DB_PORT`, Postgres credentials, and `ALLOWED_ORIGINS`.
 
 ---
 

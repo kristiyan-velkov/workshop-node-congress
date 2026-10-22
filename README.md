@@ -20,7 +20,7 @@ It is used as part of the [official Docker Node.js sample](https://docs.docker.c
 
 ### Prerequisites
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — pulls `node:24.16.0-alpine` on first build
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — pulls `node:24.22.1-alpine` on first build
 - [Node.js 24+](https://nodejs.org/) (optional, for local IDE work outside Docker)
 - [Git](https://git-scm.com/)
 
