@@ -26,7 +26,7 @@ router.get(
   validateParams(todoIdSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const item = await db.getItem(req.params.id);
+      const item = await db.getItem(req.params.id as string);
 
       if (!item) {
         return res.status(404).json({
@@ -77,7 +77,7 @@ router.put(
   validateBody(updateTodoSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
 
       // Check if todo exists
       const existingTodo = await db.getItem(id);
@@ -111,7 +111,7 @@ router.delete(
   validateParams(todoIdSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
 
       // Check if todo exists
       const existingTodo = await db.getItem(id);
